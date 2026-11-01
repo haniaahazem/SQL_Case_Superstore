@@ -75,7 +75,9 @@ WITH Recentorder AS
                    Orderdate AS date
    FROM Sales S
    JOIN Customer C ON C.Id=S.Customerid)
+	
 SELECT Id,
-       Fullname, date
+       Fullname,
+	   date
 FROM Recentorder
 WHERE Rankrecentestorder =1
