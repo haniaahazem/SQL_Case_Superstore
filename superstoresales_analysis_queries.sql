@@ -80,4 +80,4 @@ SELECT Id,
        Fullname,
 	   date
 FROM Recentorder
-WHERE Rankrecentestorder =1
+WHERE Rankrecentestorder =1;
