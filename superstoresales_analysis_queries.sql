@@ -158,4 +158,88 @@ AND Cas.Cat=Ts.Category
 GROUP BY Yearr,
          Cat,
          Targetsales ;
+#--Q11: Top 3 Products BY Total Profit Within EACH Category
+WITH Cte_rankedproducts AS
+  (SELECT *,
+          Rank() OVER (PARTITION BY Cat
+                       ORDER BY Totalprofit DESC) AS Rankedsales
+   FROM
+     (SELECT Sum(S.Price) AS Totalprofit,
+             P.Productname AS Pname,
+             S.Productid AS Id,
+             P.Category AS Cat
+      FROM Sales S
+      JOIN Products P ON P.Productid=S.Productid
+      GROUP BY Id,
+               Pname)m)
+SELECT Cat,
+       Id,
+       Pname,
+       Totalprofit
+FROM Cte_rankedproducts
+WHERE Rankedsales<=3;
 
+#--Q12: YEAR-OVER-YEAR Sales Growth (%)
+FOR EACH Category WITH Cte_yearly AS
+  (SELECT *,
+          Lag(Yearlysales) OVER (PARTITION BY Cat
+                                 ORDER BY YEAR) AS Lastyearsales
+   FROM
+     (SELECT Sum(S.Price) AS Yearlysales,
+             Year(S.Orderdate) AS YEAR,
+             P.Category AS Cat
+      FROM Sales S
+      JOIN Products P ON P.Productid=S.Productid
+      GROUP BY YEAR,
+               Cat)M)
+SELECT *,
+       Round((Yearlysales - Lastyearsales)*100/Lastyearsales, 2) AS Growth_percentage
+FROM Cte_yearly ;
+
+#--Q13: EACH Customer’S SHARE OF Their Region’S Total Sales WITH Cte_cust AS
+  (SELECT Sum(S.Price) AS Totalcust,
+          S.Customerid,
+          Concat(C.Firstname, ' ', C.Lastname) AS Fullname,
+          C.Region AS Region
+   FROM Sales S
+   JOIN Customer C ON C.Id=S.Customerid
+   GROUP BY Customerid,
+            Fullname)
+SELECT *,
+       Sum(Totalcust) OVER (PARTITION BY Region) AS Totalregion,
+       Round(Totalcust*100/Sum(Totalcust) OVER (PARTITION BY Region), 2) AS Customershare
+FROM Cte_cust
+ORDER BY Region,
+         Customershare DESC;
+
+#--Q14: Products Whose Total Sales ARE Above Their Category’S Average Product Sales
+WITH Cte_above_avg AS
+  (SELECT Totalsales,
+          Cat,
+          Id,
+          Avg(Totalsales) OVER (PARTITION BY Cat) AS Avgg
+   FROM
+     (SELECT Sum(S.Price) AS Totalsales,
+             P.Category AS Cat,
+             P.Productid AS Id
+      FROM Sales S
+      JOIN Products P ON P.Productid=S.Productid
+      GROUP BY Cat,
+               Id)M)
+SELECT *
+FROM Cte_above_avg
+WHERE Totalsales> Avgg
+ORDER BY Cat,
+         Totalsales DESC ;
+
+#--Q15: Subcategories WITH Negative Total Profit
+SELECT *
+FROM
+  (SELECT P.Subcategory AS Sub,
+          Sum(S.Profit) AS Totalprofit
+   FROM Sales S
+   JOIN Products P ON P.Productid=S.Productid
+   GROUP BY Sub)M
+WHERE Totalprofit<0;
+
+;
