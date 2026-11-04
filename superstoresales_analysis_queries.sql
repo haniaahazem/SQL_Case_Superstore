@@ -196,7 +196,8 @@ SELECT *,
        Round((Yearlysales - Lastyearsales)*100/Lastyearsales, 2) AS Growth_percentage
 FROM Cte_yearly ;
 
-#--Q13: EACH Customer’S SHARE OF Their Region’S Total Sales WITH Cte_cust AS
+#--Q13: EACH Customer’S SHARE OF Their Region’S Total Sales
+WITH Cte_cust AS
   (SELECT Sum(S.Price) AS Totalcust,
           S.Customerid,
           Concat(C.Firstname, ' ', C.Lastname) AS Fullname,
