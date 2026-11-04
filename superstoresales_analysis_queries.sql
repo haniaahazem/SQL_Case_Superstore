@@ -242,4 +242,15 @@ FROM
    GROUP BY Sub)M
 WHERE Totalprofit<0;
 
-;
+#--Q16: Rank regions by sales and by profit margin. 
+select *, 
+		rank() over (order by totalprofit desc),
+		rank() over (order by totalsales desc) 
+from (
+	select sum(s.price) as totalsales,
+		   sum(s.profit) as totalprofit,
+		   c.region as region
+	from sales s 
+	join customer c 
+	on c.id=s.customerid
+	group by region)m;
