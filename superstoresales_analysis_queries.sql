@@ -255,3 +255,43 @@ from (
 	join customer c 
 	on c.id=s.customerid
 	group by region)m;
+
+#--Q17: Average ORDER Value, AND The 10 Largest Orders BY Total Value
+SELECT *,
+       Rank() OVER (
+                    ORDER BY Ordervalue DESC) AS Rankk
+FROM
+  (SELECT Round(Avg(Price), 2) AS Ordervalue,
+          Orderid AS Id
+   FROM Sales
+   GROUP BY Orderid)M
+ORDER BY Ordervalue DESC
+LIMIT 10;
+
+#--Q18: SHARE OF Total Sales BY Customer TYPE: Frequent (7+ Orders), Occasional (2-6 Orders) AND One-TIME (1 ORDER)
+WITH Cte_customer_status AS
+  (SELECT *,
+          Sum(Total) Over() AS Totalsales,
+          Count(Customerid) OVER () AS Totalcustomers,
+          CASE
+              WHEN Countt >= 7 THEN 'frequent'
+              WHEN Countt >= 2 THEN 'occasional'
+              ELSE 'one-time'
+          END AS Status
+   FROM
+     (SELECT Count(DISTINCT Orderid) AS Countt,
+             Sum(Price) AS Total,
+             Customerid
+      FROM Sales
+      GROUP BY Customerid) M)
+	
+SELECT Status,
+       Round(Sum(Total)*100/Totalsales, 2) AS Saleshare,
+       Round(Avg(Total), 2) AS Averagesales,
+       Round(Count(Customerid)*100/Totalcustomers, 2) AS Customershare,
+       Count(Customerid) AS Costumercount
+FROM Cte_customer_status
+GROUP BY Status,
+         Totalsales,
+         Totalcustomers
+ORDER BY Saleshare DESC ;
