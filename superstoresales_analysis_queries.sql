@@ -15,7 +15,8 @@ SELECT Sum(Price),
        Date_format(Orderdate, '%Y-%m') AS MONTH
 FROM Sales
 WHERE Date_format(Orderdate, '%Y') = '2023'
-GROUP BY MONTH;
+GROUP BY MONTH
+ORDER BY MONTH;
 
 #--Q3. Find out the products that have never been sold
 SELECT P.Productid AS Pid,
@@ -178,7 +179,8 @@ SELECT Cat,
 FROM Cte_rankedproducts
 WHERE Rankedsales<=3;
 
-#--Q12: YEAR-OVER-YEAR Sales Growth (%) FOR EACH Category WITH Cte_yearly AS
+#--Q12: YEAR-OVER-YEAR Sales Growth (%) FOR EACH Category 
+WITH Cte_yearly AS
   (SELECT *,
           Lag(Yearlysales) OVER (PARTITION BY Cat
                                  ORDER BY YEAR) AS Lastyearsales
