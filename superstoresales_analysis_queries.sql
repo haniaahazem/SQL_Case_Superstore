@@ -260,17 +260,6 @@ WITH OrderSummary AS (
 	ORDER BY Ordervalue DESC;
 
 #--Q17: Average ORDER Value, AND The 10 Largest Orders BY Total Value
-SELECT *,
-	   AVG(ordervalue) over() as AOV,
-       RANK() OVER (ORDER BY Ordervalue DESC) AS AOVrank
-FROM
-  (SELECT Orderid AS Id,
-		  Round(SUM(Price), 2) AS Ordervalue
-   FROM Sales
-   GROUP BY Orderid)M
-ORDER BY Ordervalue DESC
-LIMIT 10;
-
 WITH OrderSummary AS (
 	SELECT *,
 		   AVG(ordervalue) over() as AOV,
@@ -284,10 +273,7 @@ WITH OrderSummary AS (
     SELECT * 
     FROM OrderSummary
 	WHERE AOVrank<=10
-	ORDER BY Ordervalue DESC
-;
-
-
+	ORDER BY Ordervalue DESC;
 
 #--Q18: SHARE OF Total Sales BY Customer TYPE: Frequent (7+ Orders), Occasional (2-6 Orders) AND One-TIME (1 ORDER)
 WITH Cte_customer_status AS
