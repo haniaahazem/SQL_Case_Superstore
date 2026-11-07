@@ -155,9 +155,8 @@ SELECT Cas.Cat,
 FROM Cte_actualsales Cas
 JOIN Cte_targetsales Ts ON Ts.Year=Cas.Yearr
 AND Cas.Cat=Ts.Category
-GROUP BY Yearr,
-         Cat,
-         Targetsales ;
+;
+
 #--Q11: Top 3 Products BY Total Profit Within EACH Category
 WITH Cte_rankedproducts AS
   (SELECT *,
@@ -255,17 +254,17 @@ from (
 	on c.id=s.customerid
 	group by region)m;
 
-#--Q17: Average ORDER Value, AND The 10 Largest Orders BY Total Value
 SELECT *,
-       Rank() OVER (
-                    ORDER BY Ordervalue DESC) AS Rankk
+	   AVG(ordervalue) over() as AOV,
+       RANK() OVER (ORDER BY Ordervalue DESC) AS AOVrank
 FROM
-  (SELECT Round(Avg(Price), 2) AS Ordervalue,
-          Orderid AS Id
+  (SELECT Orderid AS Id,
+		  Round(SUM(Price), 2) AS Ordervalue
    FROM Sales
    GROUP BY Orderid)M
 ORDER BY Ordervalue DESC
 LIMIT 10;
+
 
 #--Q18: SHARE OF Total Sales BY Customer TYPE: Frequent (7+ Orders), Occasional (2-6 Orders) AND One-TIME (1 ORDER)
 WITH Cte_customer_status AS
