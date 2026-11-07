@@ -270,10 +270,10 @@ WITH OrderSummary AS (
 	   FROM Sales
 	   GROUP BY Orderid)M)
 	
-    SELECT * 
-    FROM OrderSummary
-	WHERE AOVrank<=10
-	ORDER BY Ordervalue DESC;
+SELECT * 
+FROM OrderSummary
+WHERE AOVrank<=10
+ORDER BY Ordervalue DESC;
 
 #--Q18: SHARE OF Total Sales BY Customer TYPE: Frequent (7+ Orders), Occasional (2-6 Orders) AND One-TIME (1 ORDER)
 WITH Cte_customer_status AS
