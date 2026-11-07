@@ -179,8 +179,7 @@ SELECT Cat,
 FROM Cte_rankedproducts
 WHERE Rankedsales<=3;
 
-#--Q12: YEAR-OVER-YEAR Sales Growth (%)
-FOR EACH Category WITH Cte_yearly AS
+#--Q12: YEAR-OVER-YEAR Sales Growth (%) FOR EACH Category WITH Cte_yearly AS
   (SELECT *,
           Lag(Yearlysales) OVER (PARTITION BY Cat
                                  ORDER BY YEAR) AS Lastyearsales
