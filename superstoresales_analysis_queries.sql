@@ -164,7 +164,7 @@ WITH Cte_rankedproducts AS
           Rank() OVER (PARTITION BY Cat
                        ORDER BY Totalprofit DESC) AS Rankedsales
    FROM
-     (SELECT Sum(S.Price) AS Totalprofit,
+     (SELECT Sum(S.Profit) AS Totalprofit,
              P.Productname AS Pname,
              S.Productid AS Id,
              P.Category AS Cat
@@ -244,11 +244,11 @@ WHERE Totalprofit<0;
 
 #--Q16: Rank regions by sales and by profit margin. 
 select *, 
-		rank() over (order by totalprofit desc),
-		rank() over (order by totalsales desc) 
+		rank() over (order by margin desc) as marginrank,
+		rank() over (order by totalsales desc) as salesrank
 from (
 	select sum(s.price) as totalsales,
-		   sum(s.profit) as totalprofit,
+		   CAST((SUM(s.profit) / SUM(s.price)) * 100 AS DECIMAL (10 , 2 )) AS margin,
 		   c.region as region
 	from sales s 
 	join customer c 
