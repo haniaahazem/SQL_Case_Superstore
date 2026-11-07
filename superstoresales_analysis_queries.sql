@@ -244,18 +244,22 @@ FROM
 WHERE Totalprofit<0;
 
 #--Q16: Rank regions by sales and by profit margin. 
-select *, 
-		rank() over (order by margin desc) as marginrank,
-		rank() over (order by totalsales desc) as salesrank
-from (
-	select sum(s.price) as totalsales,
-		   CAST((SUM(s.profit) / SUM(s.price)) * 100 AS DECIMAL (10 , 2 )) AS margin,
-		   c.region as region
-	from sales s 
-	join customer c 
-	on c.id=s.customerid
-	group by region)m;
+WITH OrderSummary AS (
+	SELECT *,
+		   AVG(ordervalue) over() as AOV,
+		   RANK() OVER (ORDER BY Ordervalue DESC) AS AOVrank
+	FROM
+	  (SELECT Orderid AS Id,
+			  Round(sum(Price), 2) AS Ordervalue
+	   FROM Sales
+	   GROUP BY Orderid)M)
+	
+    SELECT * 
+    FROM OrderSummary
+	WHERE AOVrank<=10
+	ORDER BY Ordervalue DESC;
 
+#--Q17: Average ORDER Value, AND The 10 Largest Orders BY Total Value
 SELECT *,
 	   AVG(ordervalue) over() as AOV,
        RANK() OVER (ORDER BY Ordervalue DESC) AS AOVrank
@@ -266,6 +270,23 @@ FROM
    GROUP BY Orderid)M
 ORDER BY Ordervalue DESC
 LIMIT 10;
+
+WITH OrderSummary AS (
+	SELECT *,
+		   AVG(ordervalue) over() as AOV,
+		   RANK() OVER (ORDER BY Ordervalue DESC) AS AOVrank
+	FROM
+	  (SELECT Orderid AS Id,
+			  Round(sum(Price), 2) AS Ordervalue
+	   FROM Sales
+	   GROUP BY Orderid)M)
+	
+    SELECT * 
+    FROM OrderSummary
+	WHERE AOVrank<=10
+	ORDER BY Ordervalue DESC
+;
+
 
 
 #--Q18: SHARE OF Total Sales BY Customer TYPE: Frequent (7+ Orders), Occasional (2-6 Orders) AND One-TIME (1 ORDER)
