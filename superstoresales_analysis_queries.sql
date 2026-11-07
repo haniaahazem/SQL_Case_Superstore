@@ -303,7 +303,7 @@ GROUP BY Status,
          Totalcustomers
 ORDER BY Saleshare DESC ;
 
-#--Q29: Does discounting hurt profit? Group sales into discount bands (none, low, medium, high) and compare the average profit margin of each
+#--Q19: Does discounting hurt profit? Group sales into discount bands (none, low, medium, high) and compare the average profit margin of each
 SELECT discountrange,
 		round(sum(profit)*100/totalprofit,2) AS shareofprofit,
 		round(sum(profit)*100/sum(price),2) AS averageprofitmargin,
