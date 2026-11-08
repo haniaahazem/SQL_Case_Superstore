@@ -329,10 +329,7 @@ ORDER BY FIELD(discountrange, 'None', 'Low', 'Medium', 'High')
 
 #--Q20: Pairs of products most often bought together in the same order 
 SELECT 
-    id,
-    id1,
-    pname,
-    pname1,
+    id, id1, pname, pname1,
     COUNT(DISTINCT oid) AS itemsboughtogether
 FROM
     (SELECT 
