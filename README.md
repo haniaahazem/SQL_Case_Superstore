@@ -103,7 +103,9 @@ SQL analysis of a retail sales database covering customers, products, orders, an
 
 ```
 ├── README.md
-├── erd.png
+├── SuperstoreSales_CreateTables.sql
+├── SuperstoreSales_InsertData.sql
+├── database_diagram.png
 └── sales_analysis_queries.sql
 ```
 
@@ -112,4 +114,7 @@ SQL analysis of a retail sales database covering customers, products, orders, an
 1. Create the database and load the source tables.
 2. Run the queries in `sales_analysis_queries.sql`.
 
+## AI Usage
+
+AI was used to help draft this README.
 
