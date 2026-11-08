@@ -325,4 +325,27 @@ GROUP BY discountrange,
 ORDER BY FIELD(discountrange, 'None', 'Low', 'Medium', 'High')
  ;
 
-
+#--Q20: Pairs of products most often bought together in the same order 
+SELECT 
+    id,
+    id1,
+    pname,
+    pname1,
+    COUNT(DISTINCT oid) AS itemsboughtogether
+FROM
+    (SELECT 
+			s.orderid AS oid,
+            s.productid AS id,
+            s1.productid AS id1,
+            p1.ProductName AS pname1,
+            p.ProductName AS pname
+    FROM
+        sales AS s
+    JOIN sales AS s1 ON s1.orderid = s.orderid
+    JOIN products p ON s.productid = p.productid
+    JOIN products p1 ON s1.ProductID = p1.ProductID) m
+WHERE
+    id < id1
+GROUP BY id , id1 , pname , pname
+HAVING itemsboughtogether > 1
+ORDER BY itemsboughtogether DESC;
