@@ -87,6 +87,7 @@ SQL analysis of a retail sales database covering customers, products, orders, an
 - **Technology (Q10):** missed its sales target every year from 2020 to 2023 (69-74% of target), even though actual sales roughly doubled over that period, because the targets doubled too.
 - **Office Supplies (Q10):** beat its target in 2020-2022, then reached 84.6% in 2023 when its target doubled to 300,000.
 - **Furniture (Q10):** the 2023 result (197.5% of target) is largely due to a lower target, which was cut from 160,000 to 100,000. Actual sales grew 18.6%.
+- **Discounting (Q19):** profit margin falls as discounts rise: 27.8% with no discount, 12.9% for low, -24.2% for medium, and -37.4% for high. Medium and high discount lines are 16.8% of all lines, but together they lose an amount equal to 47.4% of total profit. No-discount lines earn 110% of total profit because the loss-making bands pull the total down.
 - **Cross-selling (Q20):** 31 product pairs were bought together in at least 2 different orders.
 
 ## SQL Concepts Practiced
@@ -107,7 +108,6 @@ SQL analysis of a retail sales database covering customers, products, orders, an
 ├── SuperstoreSales_InsertData.sql
 ├── database_diagram.png
 └── sales_analysis_queries.sql
-```
 
 ## How to Run
 
@@ -117,4 +117,3 @@ SQL analysis of a retail sales database covering customers, products, orders, an
 ## AI Usage
 
 AI was used to help draft this README.
-
