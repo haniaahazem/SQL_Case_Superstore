@@ -11,7 +11,7 @@ LIMIT 10 ;
 
 
 #--Q2. Show total sales per month for the year 2023, ordered by month.
-SELECT Sum(Price),
+SELECT Sum(Price) AS Totalsales,
        Date_format(Orderdate, '%Y-%m') AS MONTH
 FROM Sales
 WHERE Date_format(Orderdate, '%Y') = '2023'
@@ -147,7 +147,7 @@ SELECT Cas.Cat,
        Cas.Yearr,
        Ts.Target AS Targetsales,
        Cas.Actualsales,
-       Cas.Actualsales - Ts.Target AS Differance,
+       Cas.Actualsales - Ts.Target AS Difference,
        CASE
            WHEN Cas.Actualsales - Ts.Target >0 THEN 'achieved'
            ELSE 'not achieved'
@@ -294,7 +294,7 @@ SELECT Status,
        Round(Sum(Total)*100/Totalsales, 2) AS Saleshare,
        Round(Avg(Total), 2) AS Averagesales,
        Round(Count(Customerid)*100/Totalcustomers, 2) AS Customershare,
-       Count(Customerid) AS Costumercount
+       Count(Customerid) AS Customercount
 FROM Cte_customer_status
 GROUP BY Status,
          Totalsales,
