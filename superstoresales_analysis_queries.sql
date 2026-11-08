@@ -59,19 +59,23 @@ FROM Cte_dailysales;
 
   
 #--Q7. GET The Most Recent ORDER (BY Orderdate) FOR EVERY Customer. 
-WITH Recentorder AS
-  (SELECT DISTINCT Rank() OVER (PARTITION BY C.Id
-                                ORDER BY S.Orderdate DESC) AS Rankrecentestorder,
-                   S.Customerid AS Id,
-                   Concat(C.Firstname, ' ', C.Lastname) AS Fullname,
-                   S.Orderid AS Orderid,
-                   Orderdate AS date
-   FROM Sales S
-   JOIN Customer C ON C.Id=S.Customerid)
-SELECT Id,
-       Fullname, date
-FROM Recentorder
-WHERE Rankrecentestorder =1;
+WITH RecentOrder AS (
+    SELECT
+        ROW_NUMBER() OVER (
+            PARTITION BY C.Id
+            ORDER BY S.Orderdate DESC, S.Orderid DESC
+        ) AS RowNum,
+        S.Customerid AS Id,
+        CONCAT(C.Firstname, ' ', C.Lastname) AS Fullname,
+        S.Orderid,
+        S.Orderdate AS OrderDate
+    FROM Sales S
+    JOIN Customer C ON C.Id = S.Customerid
+)
+SELECT Id, Fullname, Orderid, OrderDate
+FROM RecentOrder
+WHERE RowNum = 1;
+
 
 
 /*--Q8. Classify customers based on their total sale. Show CustomerID, name, total sales: 
