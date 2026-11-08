@@ -244,20 +244,18 @@ FROM
 WHERE Totalprofit<0;
 
 #--Q16: Rank regions by sales and by profit margin. 
-WITH OrderSummary AS (
-	SELECT *,
-		   AVG(ordervalue) over() as AOV,
-		   RANK() OVER (ORDER BY Ordervalue DESC) AS AOVrank
-	FROM
-	  (SELECT Orderid AS Id,
-			  Round(sum(Price), 2) AS Ordervalue
-	   FROM Sales
-	   GROUP BY Orderid)M)
-	
-    SELECT * 
-    FROM OrderSummary
-	WHERE AOVrank<=10
-	ORDER BY Ordervalue DESC;
+SELECT *, 
+		RANK() OVER (ORDER BY margin DESC) as Marginrank,
+		RANK() OVER (ORDER BY totalsales DESC) as Salesrank
+FROM (
+	SELECT sum(s.price) AS Totalsales,
+		   CAST((SUM(s.profit) / SUM(s.price)) * 100 AS DECIMAL (10 , 2 )) AS Margin,
+		   c.region as Region
+	FROM Sales s 
+	JOIN Customer c 
+	ON c.id=s.customerid
+	GROUP BY Region)m;
+
 
 #--Q17: Average ORDER Value, AND The 10 Largest Orders BY Total Value
 WITH OrderSummary AS (
@@ -346,6 +344,6 @@ FROM
     JOIN products p1 ON s1.ProductID = p1.ProductID) m
 WHERE
     id < id1
-GROUP BY id , id1 , pname , pname
+GROUP BY id , id1 , pname , pname1
 HAVING itemsboughtogether > 1
 ORDER BY itemsboughtogether DESC;
